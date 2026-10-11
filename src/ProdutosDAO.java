@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-
 public class ProdutosDAO {
     
     Connection conn;
@@ -86,8 +85,30 @@ public class ProdutosDAO {
         }
     }
     
-    
-    
+    // NOVO MÉTODO DA ATIVIDADE 3 - LISTAR APENAS VENDIDOS
+    public ArrayList<ProdutosDTO> listarProdutosVendidos() {
+        ArrayList<ProdutosDTO> listagemVendidos = new ArrayList<>();
+        conn = new conectaDAO().connectDB();
         
+        try {
+            // A única diferença aqui é o WHERE status = 'Vendido'
+            prep = conn.prepareStatement("SELECT * FROM produtos WHERE status = 'Vendido'");
+            resultset = prep.executeQuery();
+            
+            while(resultset.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+                
+                listagemVendidos.add(produto);
+            }
+            return listagemVendidos;
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao listar produtos vendidos: " + e.getMessage());
+            return null;
+        }
+    }
 }
-
